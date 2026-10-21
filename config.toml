@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# Copyright (c) 2026 Western Digital Corporation or its affiliates.
+
+# Repo that receives the issues. Public is fine: everything checked is public.
+alert_repo = "linux-blktests/blktests-ci-watchdog"
+
+queue_warn_hours = 12       # GitHub cancels queued jobs at 24 h
+queue_idle_minutes = 30     # jobs queued this long with free slots = scale set offline
+kpd_stale_minutes = 30      # lock TTL is 1200 s, heartbeat 300 s
+series_grace_hours = 6
+
+[[scale_set]]
+repo = "linux-blktests/linux-block"
+label = "arc-vm-linux-blktests"
+max_runners = 3
+
+[[scale_set]]
+repo = "linux-blktests/linux-nvme"
+label = "arc-vm-linux-nvme"
+max_runners = 3
+
+[[kpd_lock]]
+repo = "linux-blktests/blktests-kpd-lock"
+path = "locks/linux-block.json"
+
+[[kpd_lock]]
+repo = "linux-blktests/blktests-kpd-lock"
+path = "locks/linux-nvme.json"
+
+# Disabled: with kpd's 7 day lookback this reports ~16 series without a PR,
+# because kpd legitimately skips some (no tag mapping, state, RFC). It can not
+# tell a skipped series from a stuck kpd yet. The kpd lock covers a dead kpd.
+# [[patchwork]]
+# repo = "linux-blktests/linux-block"
+# project_id = 241
